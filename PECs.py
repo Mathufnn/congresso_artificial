@@ -1,13 +1,12 @@
-import xlrd
+import xlrd     # biblioteca para parsing de arquivos .xlsx
 
 class PEC:
   def __init__(self):
     self.numero = 0
     self.descricao = ""
     self.autoria = ""
-    self.situacao = ""
+    self.resultado = ""
   
-
 xl_workbook = xlrd.open_workbook("PEC_s.xlsx")
 sheet_names = xl_workbook.sheet_names()
 xl_sheet = xl_workbook.sheet_by_name(sheet_names[0])
