@@ -1,3 +1,6 @@
-import os
-indice, pagina, ano = 8, 44, 2012
-print(os.stat("lista_materias_pdf/" + str(ano) + "/" + "materia" + str(indice) + "_pag" + str(pagina) + "_ano" + str(ano) + ".pdf").st_size)
+import PyPDF2
+indice, pagina, ano = 8, 21, 2014
+pdfFileObj = open("lista_materias_pdf/" + str(ano) + "/" + "materia" + str(indice) + "_pag" + str(pagina) + "_ano" + str(ano) + ".pdf", 'rb')
+pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+for i in range(0, pdfReader.getNumPages()):
+  print(pdfReader.getPage(i).extractText())

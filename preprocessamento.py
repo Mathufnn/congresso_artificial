@@ -7,6 +7,7 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
+import PyPDF2
 
 # Esse script foi feito para preprocessar os PDFs das materias do senado de 2007 ate 2019.
 # Requer que os PDFs ja tenham sido baixados usando o script "scraping_materias.py".
@@ -41,6 +42,14 @@ def convert_pdf_to_txt(path):
   retstr.close()
   return text
 
+def convert_pdf_to_txt2(path):
+  texto = ""
+  pdfFileObj = open("lista_materias_pdf/" + str(ano) + "/" + "materia" + str(indice + 1) + "_pag" + str(pagina) + "_ano" + str(ano) + ".pdf", 'rb')
+  pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+  for i in range(0, pdfReader.getNumPages()):
+    texto += pdfReader.getPage(i).extractText() + " "
+  return texto
+
 # Funcao que recebe a string do texto do PDF extraida pelo PDFminer e gera como saida a string
 # sem caracteres especiais.
 # Existem casos em que o PDF nao possui texto e eh apenas um scan. nesse caso, alguns caracteres 
@@ -59,9 +68,13 @@ def limpar_texto(texto):
 
   return texto_limpo
 
+checkpointano = 2014
+checkpointpagina = 21
 
 for ano in range(checkpointano, 2020):
   for pagina in range(0,100):
+    if ano == checkpointano and pagina < checkpointpagina:
+      continue
     for indice in range(0,10):
       if(os.path.isfile("lista_materias_pdf/" + str(ano) + "/" + "materia" + str(indice + 1) + "_pag" + str(pagina) + "_ano" + str(ano) + ".pdf")):
         try:
@@ -69,7 +82,7 @@ for ano in range(checkpointano, 2020):
             print("arquivo com tamanho invalido: ", "materia ", indice + 1, " da pagina ", pagina, " do ano ", ano)
             continue
 
-          texto_puro = convert_pdf_to_txt("lista_materias_pdf/" + str(ano) + "/" + "materia" + str(indice + 1) + "_pag" + str(pagina) + "_ano" + str(ano) + ".pdf")
+          texto_puro = convert_pdf_to_txt2("lista_materias_pdf/" + str(ano) + "/" + "materia" + str(indice + 1) + "_pag" + str(pagina) + "_ano" + str(ano) + ".pdf")
           texto_puro = limpar_texto(texto_puro)
 
           if not texto_puro:
@@ -86,6 +99,11 @@ for ano in range(checkpointano, 2020):
             file.write("materia" + str(indice + 1) + "_pag" + str(pagina) + "_ano" + str(ano) + ".pdf" + "\n")
 
         except TypeError:
+          print("erro no arquivo ", "materia ", indice + 1, " da pagina ", pagina, " do ano ", ano)
+          with open("corrompidos.txt", "a") as file:
+            file.write("materia" + str(indice + 1) + "_pag" + str(pagina) + "_ano" + str(ano) + ".pdf" + "\n")
+
+        except PyPDF2.utils.PdfReadError:
           print("erro no arquivo ", "materia ", indice + 1, " da pagina ", pagina, " do ano ", ano)
           with open("corrompidos.txt", "a") as file:
             file.write("materia" + str(indice + 1) + "_pag" + str(pagina) + "_ano" + str(ano) + ".pdf" + "\n")
