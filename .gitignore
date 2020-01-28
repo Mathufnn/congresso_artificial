@@ -1,0 +1,7 @@
+lista_materias_pdf/
+lista_votacoes_xml/
+*.pdf
+*.xml
+*.xlsx
+*.docx
+*.txt
