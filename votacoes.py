@@ -14,6 +14,9 @@ class Votacao:
     self.ano_materia = ano        # string em formato aaaa
     self.descricao = desc         # string grande com descricao da votacao da materia
     self.descricao_identificacao = desc_ident  # string que identifica as materias pelo indice
+  
+  def __repr__(self):
+    return "Data: %s, Codigo: %s, Resultado: %s \n" % (self.data_sessao, self.codigo_sessao, self.resultado)
 
 lista_votacoes = []               # lista de instancias da classe Votacao, pode ser exportada para outro arquivo
 
